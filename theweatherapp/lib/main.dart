@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theweatherapp/card.dart';
 
 int hexColor(String color) {
   color = color.replaceAll('#', '');
@@ -20,28 +21,33 @@ int bgSecondary = hexColor('#1F1F1F');
 int textPrimary = hexColor('#FFFFFF');
 int textSecondary = hexColor('#F3F3F3');
 
+List<Widget> cityTileList = [
+  CityTile("Boston", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
+  CityTile("Toronto", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
+  CityTile("San Francisco", "USA", 10001, 37.11, 58, 1.1, "Blah")
+      .generateCard(),
+  CityTile("Delhi", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
+];
+
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+var cityList = [];
+
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'The Weather App',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
@@ -54,25 +60,11 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.indigo.shade900,
           title: const Text('The Weather App'),
         ),
-        body: Row(
-          children: const [
-            SizedBox(
-              height: 100,
-              width: 100,
-            ),
-            SizedBox(
-              height: 100,
-              width: 100,
-            ),
-            SizedBox(
-              height: 100,
-              width: 100,
-            ),
-            SizedBox(
-              height: 100,
-              width: 100,
-            ),
-          ],
+        body: ListView.builder(
+          itemBuilder: (listViewContext, index) {
+            return cityTileList[index];
+          },
+          itemCount: cityTileList.length,
         ),
       ),
     );
@@ -163,3 +155,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+//CityTile("Toronto", "Canada", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
+        /*ListView.builder(
+          itemBuilder: (listViewContext, index){return Container();},
+          itemCount: 5,*/
