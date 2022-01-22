@@ -8,7 +8,9 @@ class NewCityForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Add a New City"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(35),
         child: Center(
@@ -20,13 +22,15 @@ class NewCityForm extends StatelessWidget {
                 MaterialTextInput(),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Row(children: [
-                    Text('Submit'),
-                    Hero(
-                      tag: 'NewCityFormTag',
-                      child: Icon(Icons.add),
-                    ),
-                  ]),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Submit'),
+                        Hero(
+                          tag: 'NewCityFormTag',
+                          child: Icon(Icons.add),
+                        ),
+                      ]),
                 ),
               ],
             ),
@@ -122,19 +126,3 @@ class _MaterialTextInputState extends State<MaterialTextInput> {
     ]));
   }
 }
-
-
-/*
-TextFormField (
-  decoration: InputDecoration(
-    border: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.transparent,),
-      borderRadius: BorderRadius.circular(7.0),
-
-    ),
-    prefixIcon: prefix_icon,
-
-  ),
-
-);
-*/

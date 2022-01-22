@@ -16,11 +16,52 @@ int hexColor(String color) {
   return int.parse(color);
 }
 
-int theme = hexColor('#2D5794');
-int bgPrimary = hexColor('#2A2A2A');
-int bgSecondary = hexColor('#1F1F1F');
-int textPrimary = hexColor('#FFFFFF');
-int textSecondary = hexColor('#F3F3F3');
+int theme_dark = hexColor('#2D5794');
+int theme2_dark = hexColor('#E1C255');
+int bgPrimary_dark = hexColor('#1F1F1F');
+int bgSecondary_dark = hexColor('#1A1A1A');
+int textPrimary_dark = hexColor('#FFFFFF');
+int textSecondary_dark = hexColor('#F3F3F3');
+
+int theme_light = hexColor('#268AD3');
+int theme2_light = hexColor('#E1C255');
+int bgPrimary_light = hexColor('#FDF6E3');
+int bgSecondary_light = hexColor('#EFE8D5');
+int textPrimary_light = hexColor('#576E74');
+int textSecondary_light = hexColor('#647B83');
+
+List<int> theme = [theme_dark, theme_light];
+List<int> theme2 = [theme2_dark, theme2_light];
+List<int> bgPrimary = [bgPrimary_dark, bgPrimary_light];
+List<int> bgSecondary = [bgSecondary_dark, bgSecondary_light];
+List<int> textPrimary = [textPrimary_dark, textPrimary_light];
+List<int> textSecondary = [textSecondary_dark, textSecondary_light];
+
+int theme_index = 0;
+
+ThemeData buildLightTheme() {
+  final ThemeData base = ThemeData.light();
+  return base.copyWith(
+    buttonColor: Color(theme[1]),
+    cardColor: Color(theme2[1]),
+    backgroundColor: Color(bgSecondary[1]),
+    primaryColor: Color(theme[1]),
+    accentColor: Color(theme[1]),
+    scaffoldBackgroundColor: Color(bgPrimary[1]),
+  );
+}
+
+ThemeData buildDarkTheme() {
+  final ThemeData base = ThemeData.dark();
+  return base.copyWith(
+    buttonColor: Color(theme[0]),
+    cardColor: Color(theme2[0]),
+    backgroundColor: Color(bgSecondary[0]),
+    primaryColor: Color(theme[0]),
+    accentColor: Color(theme[0]),
+    scaffoldBackgroundColor: Color(bgPrimary[0]),
+  );
+}
 
 List<Widget> cityTileList = [
   CityCard(
@@ -52,7 +93,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'The Weather App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        //primarySwatch: Color(theme[theme_index],
+        scaffoldBackgroundColor: Color(bgPrimary[theme_index]),
       ),
       home: MyHomePage(),
     );
@@ -121,8 +163,20 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             }),*/
       appBar: AppBar(
-        backgroundColor: Colors.indigo.shade900,
+        backgroundColor: Color(theme[theme_index]),
         title: const Text('The Weather App'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.wb_sunny),
+            onPressed: () {
+              if (theme_index % 2 == 0) {
+                theme_index = 1;
+              } else {
+                theme_index = 0;
+              }
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemBuilder: (listViewContext, index) {
