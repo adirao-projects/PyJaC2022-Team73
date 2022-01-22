@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:theweatherapp/card.dart';
+import 'package:theweatherapp/new_city_form.dart';
 
 int hexColor(String color) {
   color = color.replaceAll('#', '');
@@ -22,8 +23,11 @@ int textPrimary = hexColor('#FFFFFF');
 int textSecondary = hexColor('#F3F3F3');
 
 List<Widget> cityTileList = [
-  CityTile("Boston", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
-  CityTile("Toronto", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
+  CityCard(
+    cityName: "Boston",
+    cityID: 100,
+    cityLocation: "USA",
+  ),
   CityTile("San Francisco", "USA", 10001, 37.11, 58, 1.1, "Blah")
       .generateCard(),
   CityTile("Delhi", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
@@ -50,29 +54,13 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () {
-              print('pressed!');
-            }),
-        appBar: AppBar(
-          backgroundColor: Colors.indigo.shade900,
-          title: const Text('The Weather App'),
-        ),
-        body: ListView.builder(
-          itemBuilder: (listViewContext, index) {
-            return cityTileList[index];
-          },
-          itemCount: cityTileList.length,
-        ),
-      ),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -82,9 +70,6 @@ class MyHomePage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
-  final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -112,46 +97,39 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          heroTag: 'NewCityFormTag',
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewCityForm(),
+                ));
+          }),
+      /*FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              setState(() {
+                cityTileList.add(
+                  CityCard(
+                    cityName: "Mumbai",
+                    cityID: 21,
+                    cityLocation: "India",
+                  ),
+                );
+              });
+            }),*/
+      appBar: AppBar(
+        backgroundColor: Colors.indigo.shade900,
+        title: const Text('The Weather App'),
+      ),
+      body: ListView.builder(
+        itemBuilder: (listViewContext, index) {
+          return cityTileList[index];
+        },
+        itemCount: cityTileList.length,
+      ),
     );
   }
 }

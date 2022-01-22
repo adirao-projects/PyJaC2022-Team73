@@ -1,6 +1,94 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class CityCard extends StatefulWidget {
+  final String cityName;
+  final String cityLocation;
+  final int cityID;
+  const CityCard(
+      {Key? key,
+      required this.cityName,
+      required this.cityLocation,
+      required this.cityID})
+      : super(key: key);
+
+  @override
+  State<CityCard> createState() => _CityCard();
+}
+
+class _CityCard extends State<CityCard> {
+  double temp = 0.00;
+  String tempUnits = "C";
+  double windSpd = 0.00;
+  double rainPercent = 0.00;
+  String cityInfo = '';
+
+  _CityCard();
+
+  void updateWeather(int cityID) {
+    double newTemp = 0.00; //API CALL
+    double newWindSpd = 0.00; //API CALL
+    double newRainPercent = 0.00; //API CALL
+    String newCityInfo = '';
+    setState(() {
+      temp = newTemp;
+      rainPercent = newRainPercent;
+      windSpd = newWindSpd;
+      cityInfo = newCityInfo;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //updateWeather(widget.cityID);
+    return InkWell(
+      onTap: () => setState(() {
+        temp += 1;
+      }),
+      child: Card(
+        color: Colors.blueGrey[400],
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: Text(widget.cityName),
+                subtitle: Text(widget.cityLocation),
+                trailing: Icon(Icons.delete, color: Colors.red),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(Icons.thermostat, color: Colors.red),
+                        Text("Temp: $temp°$tempUnits")
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(Icons.umbrella, color: Colors.blue),
+                        Text("Rain: $rainPercent%"),
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(Icons.air, color: Colors.white),
+                        Text("Wind: $windSpd m/s"),
+                      ]),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CityTile {
   String cityName;
   String cityLocation;

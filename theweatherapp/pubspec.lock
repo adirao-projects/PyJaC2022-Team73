@@ -43,6 +43,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  country_list_pick:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: baaed0d399fc97ba06ae68f97881946b43da37c9
+      url: "https://github.com/TimothyGCY/country-list-pick.git"
+    source: git
+    version: "1.0.1+5"
   cupertino_icons:
     dependency: "direct main"
     description:
