@@ -27,7 +27,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  animated_theme_switcher: "^2.0.5"
+  http: any
+  animated_theme_switcher: "^2.0.1"
   country_list_pick:
       git:
           url: https://github.com/TimothyGCY/country-list-pick.git

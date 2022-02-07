@@ -1,43 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:theweatherapp/card.dart';
 import 'package:theweatherapp/new_city_form.dart';
+import 'package:theweatherapp/theme_config.dart';
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:country_list_pick/country_list_pick.dart';
 
-int hexColor(String color) {
-  color = color.replaceAll('#', '');
-  switch (color.length) {
-    case 3:
-      color = '0xff' + color[0] * 2 + color[1] * 2 + color[2] * 2;
-      break;
-
-    case 6:
-      color = '0xff' + color;
-      break;
-  }
-  return int.parse(color);
-}
-
-int theme_dark = hexColor('#2D5794');
-int theme2_dark = hexColor('#E1C255');
-int bgPrimary_dark = hexColor('#1F1F1F');
-int bgSecondary_dark = hexColor('#1A1A1A');
-int textPrimary_dark = hexColor('#FFFFFF');
-int textSecondary_dark = hexColor('#F3F3F3');
-
-int theme_light = hexColor('#268AD3');
-int theme2_light = hexColor('#E1C255');
-int bgPrimary_light = hexColor('#FDF6E3');
-int bgSecondary_light = hexColor('#EFE8D5');
-int textPrimary_light = hexColor('#576E74');
-int textSecondary_light = hexColor('#647B83');
-
-List<int> theme = [theme_dark, theme_light];
-List<int> theme2 = [theme2_dark, theme2_light];
-List<int> bgPrimary = [bgPrimary_dark, bgPrimary_light];
-List<int> bgSecondary = [bgSecondary_dark, bgSecondary_light];
-List<int> textPrimary = [textPrimary_dark, textPrimary_light];
-List<int> textSecondary = [textSecondary_dark, textSecondary_light];
-
-int theme_index = 0;
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 ThemeData buildLightTheme() {
   final ThemeData base = ThemeData.light();
@@ -69,9 +40,11 @@ List<Widget> cityTileList = [
     cityID: 100,
     cityLocation: "USA",
   ),
-  CityTile("San Francisco", "USA", 10001, 37.11, 58, 1.1, "Blah")
-      .generateCard(),
-  CityTile("Delhi", "USA", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
+  CityCard(
+    cityName: "Toronto",
+    cityID: 100,
+    cityLocation: "Canada",
+  ),
 ];
 
 void main() {
@@ -93,6 +66,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'The Weather App',
       theme: ThemeData(
+        cardColor: Color(theme2[theme_index]),
         //primarySwatch: Color(theme[theme_index],
         scaffoldBackgroundColor: Color(bgPrimary[theme_index]),
       ),
@@ -167,28 +141,156 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('The Weather App'),
         actions: [
           IconButton(
-            icon: Icon(Icons.wb_sunny),
-            onPressed: () {
-              if (theme_index % 2 == 0) {
-                theme_index = 1;
-              } else {
-                theme_index = 0;
-              }
-            },
-          ),
+              icon: Icon(Icons.wb_sunny),
+              onPressed: () {
+                setState(() {
+                  if (theme_index == 0) {
+                    theme_index = 1;
+                  } else {
+                    theme_index = 0;
+                  }
+                });
+              }),
         ],
       ),
-      body: ListView.builder(
-        itemBuilder: (listViewContext, index) {
-          return cityTileList[index];
-        },
-        itemCount: cityTileList.length,
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: ListView.builder(
+          itemBuilder: (listViewContext, index) {
+            return cityTileList[index];
+          },
+          itemCount: cityTileList.length,
+        ),
       ),
     );
   }
 }
 
-//CityTile("Toronto", "Canada", 10001, 37.11, 58, 1.1, "Blah").generateCard(),
-        /*ListView.builder(
-          itemBuilder: (listViewContext, index){return Container();},
-          itemCount: 5,*/
+//import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+
+TextEditingController cityController = new TextEditingController();
+TextEditingController countryController = new TextEditingController();
+
+class NewCityForm extends StatefulWidget {
+  @override
+  State<NewCityForm> createState() => _NewCityFormState();
+}
+
+class _NewCityFormState extends State<NewCityForm> {
+  String city_name = '';
+  String city_country = '';
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void submitForm() {}
+
+  Future<String> getData(city_name, city_country) async {
+    http.Response response = await http.get(Uri.parse("http://url.org"),
+        headers: {"Accept": "application/json"});
+    print(response.body);
+    cityTileList.add(
+      CityCard(cityName: city_name, cityLocation: city_country, cityID: 0),
+    );
+
+    //List data = JSON.decode(response.body);
+    return response.body;
+  }
+
+  void addCard(city_name, city_country) {
+    cityTileList.add(
+      CityCard(cityName: city_name, cityLocation: city_country, cityID: 0),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add a New City"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(35),
+        child: Center(
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                //MaterialTextInputCity(),
+                //MaterialTextInputState(),
+                buildCity(),
+                buildCountry(),
+                buildSubmit(),
+                //MaterialTextInput(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String currentText_city = '';
+  String currentText_country = '';
+
+  Widget buildCity() => Container(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        TextFormField(
+          controller: cityController,
+          style: TextStyle(color: Color(textSecondary[theme_index])),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Enter your City",
+            prefixIcon: Icon(Icons.location_city),
+          ),
+          onChanged: (text) => setState(() {
+            String currentText_city = text;
+            this.city_name = text;
+          }),
+          onSaved: (text) => setState(() {
+            this.city_name = text!;
+          }),
+        ),
+        Text(currentText_city),
+      ]));
+
+  Widget buildCountry() => Container(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        TextFormField(
+          controller: countryController,
+          style: TextStyle(color: Color(textSecondary[theme_index])),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Enter your Country",
+            prefixIcon: Icon(Icons.map),
+          ),
+          onChanged: (text) => setState(() {
+            String currentText_country = text;
+            this.city_country = text;
+          }),
+          onSaved: (text) => setState(() {
+            this.city_country = text!;
+          }),
+        ),
+        Text(currentText_country),
+      ]));
+
+  Widget buildSubmit() => ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyHomePage(),
+            ));
+        //print(cityController.text);
+        //print(countryController.text);
+        addCard(cityController.text, countryController.text);
+        //getData(cityController.text, countryController.text);
+      },
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text('Submit'),
+        Hero(
+          tag: 'NewCityFormTag',
+          child: Icon(Icons.add),
+        ),
+      ]));
+}

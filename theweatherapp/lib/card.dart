@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:theweatherapp/theme_config.dart';
+
 class CityCard extends StatefulWidget {
   final String cityName;
   final String cityLocation;
@@ -42,12 +44,9 @@ class _CityCard extends State<CityCard> {
   Widget build(BuildContext context) {
     //updateWeather(widget.cityID);
     return InkWell(
-      onTap: () => setState(() {
-        temp += 1;
-      }),
       child: Card(
-        color: Colors.blueGrey[400],
-        elevation: 4.0,
+        //color: Colors.blueGrey[400],
+        elevation: 20.0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -56,7 +55,9 @@ class _CityCard extends State<CityCard> {
               ListTile(
                 title: Text(widget.cityName),
                 subtitle: Text(widget.cityLocation),
-                trailing: Icon(Icons.delete, color: Colors.red),
+                trailing: IconButton(
+                    onPressed: () => {widget.removeFunc(widget.index)},
+                    icon: Icon(Icons.delete, color: Colors.red)),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -153,7 +154,7 @@ class CityTile {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Icon(Icons.air, color: Colors.white),
-                        Text("Wind: $windSpd m/s"),
+                        Text("Wind: $windSpd km/h"),
                       ]),
                 ],
               ),
@@ -164,10 +165,3 @@ class CityTile {
     );
   }
 }
-
-/* Container(
-              color: Colors.blueGrey[700],
-              child: ListTile(
-                title: Text("Temperature: $temp°C"),
-              ),
-*/
